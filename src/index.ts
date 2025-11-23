@@ -1,4 +1,12 @@
-import { intro, outro, text, note, log, cancel, isCancel } from '@clack/prompts'
+import {
+  cancel,
+  intro,
+  isCancel,
+  log,
+  outro,
+  text,
+  spinner,
+} from '@clack/prompts'
 import * as fs from 'fs-extra'
 import { join } from 'node:path'
 
@@ -37,17 +45,43 @@ export const main = async (): Promise<number> => {
   }
 
   // テンプレートを展開
-  log.step('Extracting templates...')
+  const extractSpinner = spinner()
+  extractSpinner.start('Extracting templates...')
   await fs.copy(join(__dirname, 'template'), '.')
+  extractSpinner.stop('Template files were extracted')
 
   // ファイルをリネーム
-  log.step('Renaming extracted files...')
+  const renameSpinner = spinner()
+  renameSpinner.start('Renaming extracted files...')
   const renameFiles: [string, string][] = [
     ['./_gitignore', './.gitignore'],
     ['./packages/frontend/_env', './packages/frontend/.env'],
     ['./packages/backend/_env', './packages/backend/.env'],
+    ['./project.code-workspace', `${packageName}.code-workspace`],
   ]
-  await Promise.allSettled(renameFiles.map(([from, to]) => fs.rename(from, to)))
+  await Promise.allSettled(
+    renameFiles.map(([from, to]) => {
+      renameSpinner.message(`${from} -> ${to}`)
+      return fs.rename(from, to)
+    }),
+  )
+  renameSpinner.stop('Some files were renamed')
+
+  // package.jsonを更新
+  log.step('Modifying package.json...')
+  const packageJson = await fs
+    .readFile('./package.json')
+    .then((data) => JSON.parse(data.toString()))
+  packageJson.name = packageName
+  await fs.writeJSON('./package.json', packageJson, { spaces: 2 })
+
+  // README.mdを更新
+  log.step('Modifying README.md...')
+  const readme = await fs
+    .readFile('./README.md')
+    .then((data) => data.toString())
+  const modified = readme.replace(/\[package_name\]/, packageName)
+  await fs.writeFile('./README.md', modified)
 
   outro(`The new package '${packageName}' prepared successfully :)`)
 
