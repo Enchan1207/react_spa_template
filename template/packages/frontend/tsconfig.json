@@ -1,0 +1,38 @@
+// based on:
+//  - https://typescriptbook.jp/reference/tsconfig/tsconfig.json-settings
+//  - tsconfig.app.json @ npm create cloudflare@latest -- worker-spa --framework=react
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "rootDir": "./src",
+    "strict": true,
+    "moduleResolution": "bundler",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@routes": ["../backend/src/index.ts"]
+    },
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["dist", "node_modules"],
+  "references": [{ "path": "../backend" }],
+  "compileOnSave": false
+}
