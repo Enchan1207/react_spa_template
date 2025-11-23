@@ -1,0 +1,36 @@
+{
+    "name": "@enchan1207/react_spa_template",
+    "description": "Project template generator of React SPA × Hono backend",
+    "author": "Enchan1207",
+    "license": "MIT",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Enchan1207/react_spa_template.git"
+    },
+    "bin": {
+        "react_spa_template": "dist/index.js"
+    },
+    "files": [
+        "dist",
+        "template",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "dev": "pnpm build && node ./dist/index.js",
+        "build": "node ./build.mjs",
+        "prepublishOnly": "pnpm build"
+    },
+    "dependencies": {
+        "@clack/prompts": "^0.11.0",
+        "fs-extra": "^11.3.2"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.4",
+        "@types/node": "^24.10.1",
+        "esbuild": "^0.27.0",
+        "typescript": "^5.9.3"
+    },
+    "packageManager": "pnpm@10.11.0"
+}
