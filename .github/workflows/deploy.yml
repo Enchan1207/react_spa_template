@@ -1,0 +1,60 @@
+name: Deploy package
+
+on:
+  push:
+    branches: main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  compare_version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      changed: ${{ steps.compare_version.outputs.changed }}
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Check version between HEAD and ^HEAD
+        id: compare_version
+        run: |
+          prevVersion=$(git show HEAD~1:package.json | jq -r .version)
+          currentVersion=$(jq -r .version package.json)
+          if [ "$prevVersion" = "$currentVersion" ]; then
+            echo "::notice::No version changes detected. publication will be skipped."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::Version changed: $prevVersion -> $currentVersion"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+  publish:
+    needs: compare_version
+    if: needs.compare_version.outputs.changed == 'true'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      # Update npm 11.5.1 or later for npm Trusted Publishing
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install
+        run: pnpm i --frozen-lockfile
+
+      - name: Publish
+        run: pnpm publish --access public
