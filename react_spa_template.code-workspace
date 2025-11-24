@@ -1,14 +1,24 @@
 {
   "folders": [
     {
-      "path": "./template"
+      "path": "./template",
     },
     {
-      "path": ".github/workflows"
+      "path": ".github/workflows",
     },
     {
       "name": "(root)",
-      "path": "./"
-    }
-  ]
+      "path": "./",
+    },
+  ],
+  "settings": {
+    "eslint.useFlatConfig": true,
+    "eslint.workingDirectories": ["./packages/frontend", "./packages/backend"],
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+    },
+    "typescript.format.enable": false,
+    "eslint.enable": true,
+    "eslint.format.enable": true,
+  },
 }

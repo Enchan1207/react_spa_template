@@ -1,14 +1,15 @@
+import { join } from 'node:path'
+
 import {
   cancel,
   intro,
   isCancel,
   log,
   outro,
-  text,
   spinner,
+  text,
 } from '@clack/prompts'
 import * as fs from 'fs-extra'
-import { join } from 'node:path'
 
 export const main = async (): Promise<number> => {
   intro('Welcome!')
@@ -71,7 +72,7 @@ export const main = async (): Promise<number> => {
   log.step('Modifying package.json...')
   const packageJson = await fs
     .readFile('./package.json')
-    .then((data) => JSON.parse(data.toString()))
+    .then((data) => JSON.parse(data.toString()) as Record<string, string>)
   packageJson.name = packageName
   await fs.writeJSON('./package.json', packageJson, { spaces: 2 })
 

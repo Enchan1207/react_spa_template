@@ -2,6 +2,8 @@
     "name": "frontend",
     "type": "module",
     "scripts": {
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
         "prebuild": "pnpm -F backend build",
         "build": "tsc && vite build",
         "dev": "vite dev"
