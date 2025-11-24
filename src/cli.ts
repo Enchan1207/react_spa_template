@@ -1,8 +1,8 @@
 import { main } from 'src'
 
 main()
-  .then(process.exit)
-  .catch((e) => {
+  .then((code) => process.exit(code))
+  .catch((e: unknown) => {
     console.error(e)
     process.exit(1)
   })
