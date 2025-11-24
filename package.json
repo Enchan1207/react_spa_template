@@ -3,7 +3,7 @@
     "description": "Project template generator of React SPA × Hono backend",
     "author": "Enchan1207",
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Enchan1207/react_spa_template.git"
