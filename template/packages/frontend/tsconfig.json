@@ -27,9 +27,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"],
+      "src/*": ["./src/*"],
       "@routes": ["../backend/src/index.ts"]
-    },
+    }
   },
   "include": ["./src/**/*"],
   "exclude": ["dist", "node_modules"],
