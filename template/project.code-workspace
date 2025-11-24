@@ -11,4 +11,13 @@
       "name": "(root)",
     },
   ],
+  "settings": {
+    "eslint.useFlatConfig": true,
+    "eslint.workingDirectories": ["./packages/frontend", "./packages/backend"],
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+    },
+    "typescript.format.enable": false,
+    "eslint.format.enable": true,
+  }
 }

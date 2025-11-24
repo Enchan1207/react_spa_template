@@ -1,0 +1,183 @@
+// @ts-check
+// NOTE: プラグインの命名は eslint-plugin を削ったlowerCamelCase
+import eslint from '@eslint/js'
+import { defineConfig } from "eslint/config";
+import prettierConfig from 'eslint-config-prettier'
+import * as importPlugin from 'eslint-plugin-import'
+import reactPlugin from "eslint-plugin-react"
+import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort'
+import unusedImportsPlugin from 'eslint-plugin-unused-imports'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+
+const backendTypeRestriction = {
+  group: ['@routes/**'],
+  message: 'Do not use backend types.',
+  allowTypeImports: false,
+}
+
+export default defineConfig(
+  // MARK: - Base configurations
+
+  {
+    name: 'global ignore',
+    ignores: ['**/dist', '**/node_modules'],
+  },
+
+  // MARK: - Shared configurations
+  eslint.configs.recommended,
+  tseslint.configs.strict,
+  // TODO: こっちにしたい
+  // tseslint.configs.strictTypeChecked,
+
+  // configurations for TypeScript with type checking
+  // based on: https://typescript-eslint.io/getting-started/typed-linting
+  {
+    name: 'backend',
+    files: ['packages/backend/**/*.ts'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.node,
+      parser: tseslint.parser,
+      parserOptions: { project: true },
+    },
+    extends: [tseslint.configs.strictTypeChecked],
+  },
+
+  // configurations for React
+  // based on:
+  //  - https://www.npmjs.com/package/eslint-plugin-react
+  {
+    name: 'frontend',
+    files: ['packages/frontend/**/*.{ts,tsx}'],
+    ...reactPlugin.configs.flat.recommended,
+    languageOptions: {
+      ...reactPlugin.configs.flat.recommended.languageOptions,
+      globals: globals.browser,
+      parserOptions: {
+        project: true,
+        parser: tseslint.parser,
+      },
+    },
+    extends: [tseslint.configs.strictTypeChecked],
+  },
+
+  // configurations for config files
+  {
+    name: 'config files',
+    files: ['**/*.config.{j,mj,t.mt}s'],
+    languageOptions: { globals: globals.node },
+  },
+
+  // MARK: - Plugin settings
+
+  // based on: https://typescript-eslint.io/getting-started/typed-linting
+  {
+    name: "react plugin settings",
+    settings: {
+      react: {
+        createClass: "createReactClass",
+        pragma: "React",
+        fragment: "Fragment",
+        version: "detect",
+        defaultVersion: "",
+        flowVersion: "0.53"
+      },
+      propWrapperFunctions: [
+        "forbidExtraProps",
+        { property: "freeze", object: "Object" },
+        { property: "myFavoriteWrapper" },
+        { property: "forbidExtraProps", exact: true }
+      ],
+      componentWrapperFunctions: [
+        "observer",
+        { property: "styled" },
+        { property: "observer", object: "Mobx" },
+        { property: "observer", object: "<pragma>" }
+      ],
+      formComponents: [
+        "CustomForm",
+        { name: "SimpleForm", formAttribute: "endpoint" },
+        { name: "Form", formAttribute: ["registerEndpoint", "loginEndpoint"] },
+      ],
+      linkComponents: [
+        "Hyperlink",
+        { name: "MyLink", linkAttribute: "to" },
+        { name: "Link", linkAttribute: ["to", "href"] },
+      ]
+    }
+  },
+
+
+  {
+    name: 'import rules',
+    plugins: {
+      import: importPlugin,
+      'simple-import-sort': simpleImportSortPlugin,
+      'unused-import': unusedImportsPlugin,
+    },
+    rules: {
+      'import/first': 'error',
+      'import/newline-after-import': 'error',
+      'import/no-duplicates': 'error',
+      'import/consistent-type-specifier-style': 'error',
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+      'unused-import/no-unused-imports': 'error',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-import/no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+
+  {
+    name: 'frontend rules',
+    files: ['packages/frontend/**/*.{ts, tsx}'],
+    plugins: { react: reactPlugin },
+    rules: {
+      'no-console': 'warn',
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [backendTypeRestriction],
+        },
+      ],
+    },
+  },
+
+  {
+    name: 'backend rules',
+    files: ['packages/backend/**/*.ts'],
+    rules: {
+      // there is no rules yet
+    },
+  },
+
+  {
+    name: 'common rules',
+    files: ['packages/**/*.{ts,tsx}'],
+    rules: {
+      eqeqeq: ['error', 'always'],
+      'no-useless-rename': 'error',
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        { allowNumber: true },
+      ],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports' },
+      ],
+    },
+  },
+
+  prettierConfig,
+)
