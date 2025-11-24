@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "./template"
+    },
+    {
+      "path": ".github/workflows"
+    },
+    {
+      "name": "(root)",
+      "path": "./"
+    }
+  ]
+}
