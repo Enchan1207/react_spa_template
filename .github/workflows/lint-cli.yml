@@ -1,14 +1,13 @@
-name: lint
+name: lint CLI
+
 on:
   push:
     paths:
-      - 'template/**'
       - 'src/**'
       - './package.json'
       - './eslint.config.mjs'
   pull_request:
     paths:
-      - 'template/**'
       - 'src/**'
       - './package.json'
       - './eslint.config.mjs'
@@ -16,7 +15,7 @@ on:
       - main
 
 jobs:
-  lint:
+  lint_cli:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -32,4 +31,4 @@ jobs:
         run: pnpm i --frozen-lockfile
 
       - name: lint
-        run: npm run lint
+        run: pnpm lint
