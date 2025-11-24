@@ -32,7 +32,7 @@ export default defineConfig(
   // based on: https://typescript-eslint.io/getting-started/typed-linting
   {
     name: 'backend',
-    files: ['packages/backend/**/*.ts'],
+    files: ['packages/backend/src/**/*.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -48,12 +48,12 @@ export default defineConfig(
   //  - https://www.npmjs.com/package/eslint-plugin-react
   {
     name: 'frontend',
-    files: ['packages/frontend/**/*.{ts,tsx}'],
+    files: ['packages/frontend/src/**/*.{ts,tsx}'],
     languageOptions: {
       ...reactPlugin.configs.flat['jsx-runtime'].languageOptions,
       globals: globals.browser,
       parserOptions: {
-        project: "./packages/frontend/tsconfig.lint.json",
+        project: true,
         parser: tseslint.parser,
       },
     },
@@ -139,7 +139,7 @@ export default defineConfig(
 
   {
     name: 'frontend rules',
-    files: ['packages/frontend/**/*.{ts,tsx}'],
+    files: ['packages/frontend/src/**/*.{ts,tsx}'],
     plugins: { react: reactPlugin },
     rules: {
       'no-console': 'warn',
@@ -165,7 +165,7 @@ export default defineConfig(
 
   {
     name: 'backend rules',
-    files: ['packages/backend/**/*.ts'],
+    files: ['packages/backend/src/**/*.ts'],
     rules: {
       // there is no rules yet
     },
@@ -173,7 +173,7 @@ export default defineConfig(
 
   {
     name: 'common rules',
-    files: ['packages/**/*.{ts,tsx}'],
+    files: ['packages/**/src/*.{ts,tsx}'],
     rules: {
       eqeqeq: ['error', 'always'],
       'no-useless-rename': 'error',
