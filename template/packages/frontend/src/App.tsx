@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { client } from './client'
+import { useState } from 'react';
+
+import { client } from './client';
 
 const App: React.FC = () => {
   const [message, setMessage] = useState<string>('')

@@ -1,14 +1,14 @@
 // @ts-check
 // NOTE: プラグインの命名は eslint-plugin を削ったlowerCamelCase
-import eslint from '@eslint/js'
-import { defineConfig } from "eslint/config";
-import prettierConfig from 'eslint-config-prettier'
-import * as importPlugin from 'eslint-plugin-import'
-import reactPlugin from "eslint-plugin-react"
-import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort'
-import unusedImportsPlugin from 'eslint-plugin-unused-imports'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import prettierConfig from 'eslint-config-prettier';
+import * as importPlugin from 'eslint-plugin-import';
+import reactPlugin from 'eslint-plugin-react';
+import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
+import unusedImportsPlugin from 'eslint-plugin-unused-imports';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 const backendTypeRestriction = {
   group: ['@routes/**'],
@@ -27,8 +27,6 @@ export default defineConfig(
   // MARK: - Shared configurations
   eslint.configs.recommended,
   tseslint.configs.strict,
-  // TODO: こっちにしたい
-  // tseslint.configs.strictTypeChecked,
 
   // configurations for TypeScript with type checking
   // based on: https://typescript-eslint.io/getting-started/typed-linting
@@ -51,60 +49,61 @@ export default defineConfig(
   {
     name: 'frontend',
     files: ['packages/frontend/**/*.{ts,tsx}'],
-    ...reactPlugin.configs.flat.recommended,
     languageOptions: {
-      ...reactPlugin.configs.flat.recommended.languageOptions,
+      ...reactPlugin.configs.flat['jsx-runtime'].languageOptions,
       globals: globals.browser,
       parserOptions: {
         project: true,
         parser: tseslint.parser,
       },
     },
-    extends: [tseslint.configs.strictTypeChecked],
+    extends: [tseslint.configs.strictTypeChecked, reactPlugin.configs.flat['jsx-runtime']],
   },
 
   // configurations for config files
   {
     name: 'config files',
     files: ['**/*.config.{j,mj,t.mt}s'],
-    languageOptions: { globals: globals.node },
+    languageOptions: {
+      globals: globals.node,
+    },
   },
 
   // MARK: - Plugin settings
 
   // based on: https://typescript-eslint.io/getting-started/typed-linting
   {
-    name: "react plugin settings",
+    name: 'react plugin settings',
     settings: {
       react: {
-        createClass: "createReactClass",
-        pragma: "React",
-        fragment: "Fragment",
-        version: "detect",
-        defaultVersion: "",
-        flowVersion: "0.53"
+        createClass: 'createReactClass',
+        pragma: 'React',
+        fragment: 'Fragment',
+        version: 'detect',
+        defaultVersion: '',
+        flowVersion: '0.53'
       },
       propWrapperFunctions: [
-        "forbidExtraProps",
-        { property: "freeze", object: "Object" },
-        { property: "myFavoriteWrapper" },
-        { property: "forbidExtraProps", exact: true }
+        'forbidExtraProps',
+        { property: 'freeze', object: 'Object' },
+        { property: 'myFavoriteWrapper' },
+        { property: 'forbidExtraProps', exact: true }
       ],
       componentWrapperFunctions: [
-        "observer",
-        { property: "styled" },
-        { property: "observer", object: "Mobx" },
-        { property: "observer", object: "<pragma>" }
+        'observer',
+        { property: 'styled' },
+        { property: 'observer', object: 'Mobx' },
+        { property: 'observer', object: '<pragma>' }
       ],
       formComponents: [
-        "CustomForm",
-        { name: "SimpleForm", formAttribute: "endpoint" },
-        { name: "Form", formAttribute: ["registerEndpoint", "loginEndpoint"] },
+        'CustomForm',
+        { name: 'SimpleForm', formAttribute: 'endpoint' },
+        { name: 'Form', formAttribute: ['registerEndpoint', 'loginEndpoint'] },
       ],
       linkComponents: [
-        "Hyperlink",
-        { name: "MyLink", linkAttribute: "to" },
-        { name: "Link", linkAttribute: ["to", "href"] },
+        'Hyperlink',
+        { name: 'MyLink', linkAttribute: 'to' },
+        { name: 'Link', linkAttribute: ['to', 'href'] },
       ]
     }
   },
@@ -140,7 +139,7 @@ export default defineConfig(
 
   {
     name: 'frontend rules',
-    files: ['packages/frontend/**/*.{ts, tsx}'],
+    files: ['packages/frontend/**/*.{ts,tsx}'],
     plugins: { react: reactPlugin },
     rules: {
       'no-console': 'warn',
@@ -151,6 +150,15 @@ export default defineConfig(
           patterns: [backendTypeRestriction],
         },
       ],
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: {
+            // NOTE: イベントハンドラ内で非同期処理をしたいことがある
+            attributes: false
+          }
+        }
+      ]
     },
   },
 
