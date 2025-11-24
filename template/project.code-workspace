@@ -18,6 +18,7 @@
       "source.fixAll.eslint": "always",
     },
     "typescript.format.enable": false,
+    "eslint.enable": true,
     "eslint.format.enable": true,
   }
 }

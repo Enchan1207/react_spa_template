@@ -19,8 +19,8 @@ const backendTypeRestriction = {
 export default defineConfig(
   // MARK: - Base configurations
 
+  // global ignore
   {
-    name: 'global ignore',
     ignores: ['**/dist', '**/node_modules'],
   },
 
@@ -53,7 +53,7 @@ export default defineConfig(
       ...reactPlugin.configs.flat['jsx-runtime'].languageOptions,
       globals: globals.browser,
       parserOptions: {
-        project: true,
+        project: "./packages/frontend/tsconfig.lint.json",
         parser: tseslint.parser,
       },
     },
@@ -144,6 +144,7 @@ export default defineConfig(
     rules: {
       'no-console': 'warn',
       'no-restricted-imports': 'off',
+      'react/hook-use-state': 'error',
       '@typescript-eslint/no-restricted-imports': [
         'error',
         {
